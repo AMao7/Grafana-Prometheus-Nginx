@@ -1,0 +1,35 @@
+version: "3.8"
+networks:
+  engine2:
+    driver: bridge
+services:
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+    ports:
+      - 9090:9090
+    networks:
+      - engine2
+
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    networks:
+      - engine2
+
+    
+
+    
+    
+      
+
+      #in the prometheus job add the port of centosvm
