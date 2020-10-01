@@ -1,35 +1,51 @@
 ---
-    version: "3.8"
-    services:
-      nginx:
-        image: nginx
-        container_name: nginx
-        volumes:
-         - ./templates:/etc/nginx/templates
-         - ./webpage:/webpage
-        ports:
-          - 80:80
-          - 8080:8080
-        networks:
-          - engine
-        
-    
-    
-      nginx-exporter:
-        image: nginx/nginx-prometheus-exporter
-        container_name: nginx-exporter
-        user: root
-        environment: 
-          - SCRAPE_URI=http://nginx:8080/stub_status
-          - NGINXRETRIES=10
-        restart: always
-        ports:
-          - 9113:9113
-        networks:
-          - engine
-        depends_on:
-          - nginx
-    
-    networks:
-      engine:
-        driver: bridge
+  version: "3.3"
+  services:
+    nginx:
+      image: nginx
+      container_name: nginx
+      volumes:
+       - ./templates:/etc/nginx/templates
+       - ./webpage:/webpage
+      ports:
+        - 8080:80
+      networks:
+        - engine
+
+
+
+    nginx-exporter:
+      image: nginx/nginx-prometheus-exporter
+      container_name: nginx-exporter
+      user: root
+      environment:
+        - SCRAPE_URI=http://nginx:8080/stub_status
+        - NGINXRETRIES=10
+      restart: always
+      ports:
+        - 9113:9113
+      networks:
+        - engine
+      depends_on:
+        - nginx
+    node-exporter:
+      image: prom/node-exporter
+      container_name: node-exporter
+      user: root
+      restart: always
+      volumes:
+         - ./node:/etc/node
+         - ./nodeexporter:/etc/nodeexporter
+      command:
+         - '--web.config=/etc/node/web.yml'
+      ports:
+         - 9100:9100
+      networks:
+         - engine
+
+      depends_on:
+         - nginx
+
+  networks:
+    engine:
+      driver: bridge

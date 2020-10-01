@@ -1,0 +1,3 @@
+tls_server_config:
+    cert_file: /etc/nodeexporter/node_exporter.crt
+    key_file: /etc/nodeexporter/node_exporter.key
